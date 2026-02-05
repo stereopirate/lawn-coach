@@ -3,63 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LawnCoach | DIY Tracker</title>
+    <title>Lawn Tracker - Home</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">🌿 Lawn<span>Coach</span></div>
-    </nav>
 
-    <main class="container">
-        <div class="weather-search">
-            <input type="text" id="city-input" placeholder="Enter Zip Code">
-            <button id="weather-btn" class="btn-primary">Update Location</button>
-        </div>
+<nav class="navbar">
+    <h1>Lawn Tracker</h1>
+    <a href="coach.html" class="coach-link">Open Lawn Coach →</a>
+</nav>
 
-        <div class="coach-card tip-card">
-            <div id="weather-display" class="weather-mini">Enter zip for weather...</div>
-            <h3>Coach's Corner</h3>
-            <p id="daily-tip">Checking conditions... Stay sharp!</p>
-        </div>
-
-        <section class="log-section">
-            <div class="header-row">
-                <h2>Maintenance Log</h2>
-                <button id="add-btn" class="btn-primary">+ New Entry</button>
-            </div>
-            <div id="log-container" class="timeline"></div>
-        </section>
-    </main>
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h3>Log Activity</h3>
-            <label>Activity</label>
-            <select id="activity-type">
-                <option value="Mowed">🚜 Mowed</option>
-                <option value="Watered">💧 Watered</option>
-                <option value="Fertilized">🌱 Fertilized</option>
-                <option value="Seeded">🌾 Seeded</option>
-            </select>
-            <label>Zone</label>
-            <select id="activity-zone">
-                <option value="Front Yard">Front Yard</option>
-                <option value="Back Yard">Back Yard</option>
-                <option value="Side Yard">Side Yard</option>
-                <option value="Entire Lawn">Entire Lawn</option>
-            </select>
-            <label>Date</label>
-            <input type="date" id="activity-date">
-            <label>Notes</label>
-            <textarea id="activity-notes" placeholder="e.g. Set blades to 3 inches..." rows="3"></textarea>
-            <div class="modal-btns">
-                <button id="save-btn" class="btn-primary">Save Activity</button>
-                <button id="close-btn" class="btn-secondary">Cancel</button>
-            </div>
-        </div>
+<div class="container">
+    <div class="profile-card" id="profileHeader">
+        <p id="profileText">Lawn size not set. <a href="coach.html">Measure now</a></p>
     </div>
-    <script src="script.js"></script>
+
+    <section class="card">
+        <h2>🧮 Bag Rate Calculator</h2>
+        <p>Calculate how much fertilizer you need for your specific lawn.</p>
+        <div class="calc-grid">
+            <div class="input-group">
+                <label>Target Nitrogen (lbs/1000sqft)</label>
+                <input type="number" id="targetN" value="1.0" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Bag Nitrogen % (First # on bag)</label>
+                <input type="number" id="bagN" placeholder="e.g. 24">
+            </div>
+            <button onclick="calculateBags()">Calculate</button>
+        </div>
+        <div id="calcResult" class="result-box"></div>
+    </section>
+
+    </div>
+
+<script>
+    function loadProfile() {
+        const sqFt = localStorage.getItem('lawnSqFt');
+        const display = document.getElementById('profileText');
+        if (sqFt) {
+            display.innerHTML = `🏠 My Lawn Size: <strong>${sqFt} sq ft</strong> | <a href="coach.html">Update</a>`;
+        }
+    }
+
+    function calculateBags() {
+        const sqFt = localStorage.getItem('lawnSqFt');
+        const targetN = document.getElementById('targetN').value;
+        const bagN = document.getElementById('bagN').value;
+        const resultDiv = document.getElementById('calcResult');
+
+        if (!sqFt) {
+            resultDiv.innerHTML = "⚠️ Please set your lawn size in the Coach first!";
+            return;
+        }
+        if (!bagN) {
+            resultDiv.innerHTML = "⚠️ Enter the Nitrogen percentage from the bag.";
+            return;
+        }
+
+        // Formula: (Target Lbs / (Bag N / 100)) * (Total SqFt / 1000)
+        const totalLbsNeeded = (targetN / (bagN / 100)) * (sqFt / 1000);
+        
+        resultDiv.innerHTML = `
+            <strong>Results:</strong><br>
+            You need <strong>${totalLbsNeeded.toFixed(1)} lbs</strong> of this fertilizer to cover your ${sqFt} sq ft lawn at a rate of ${targetN}lb N.
+        `;
+    }
+
+    window.onload = loadProfile;
+</script>
 </body>
 </html>
