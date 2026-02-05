@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawn Coach - Tools</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html">← Back to Tracker</a>
+    <h1>Lawn Coach Tools</h1>
+</nav>
+
+<div class="container">
+    <section class="card">
+        <h2>🌱 Soil Temperature</h2>
+        <div class="input-group">
+            <input type="text" id="zipInput" placeholder="Enter City or Zip">
+            <button onclick="getSoilData()">Check Temp</button>
+        </div>
+        <div id="tempDisplay" style="font-size: 3rem; text-align: center; font-weight: bold; margin: 10px 0;">--°F</div>
+        <div id="coachAdvice" class="result-box">Enter location to see lawn timing advice.</div>
+    </section>
+
+    <section class="card">
+        <h2>📐 Lawn Area Mapper</h2>
+        <div id="map" style="height: 350px; border-radius: 8px; margin-bottom: 10px;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button onclick="clearMap()">Reset</button>
+            <span>Area: <strong id="areaResult">0</strong> sq ft</span>
+            <button onclick="saveLawnData()" style="background: #2c3e50;">Save Area</button>
+        </div>
+    </section>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-geometryutil@0.10.3/src/leaflet.geometryutil.js"></script>
+<script>
+    let map, polygon, markers = [];
+
+    function initMap() {
+        map = L.map('map').setView([39.82, -98.57], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        map.on('click', e => {
+            markers.push(e.latlng);
+            if (polygon) map.removeLayer(polygon);
+            polygon = L.polygon(markers, {color: '#2ecc71'}).addTo(map);
+            let area = L.GeometryUtil.geodesicArea(markers) * 10.7639;
+            document.getElementById('areaResult').innerText = Math.round(area);
+        });
+    }
+
+    async function getSoilData() {
+        const query = document.getElementById('zipInput').value;
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+        const geoData = await geoRes.json();
+        if (geoData[0]) {
+            const { lat, lon } = geoData[0];
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=soil_temperature_6cm&temperature_unit=fahrenheit&forecast_days=1`);
+            const wData = await wRes.json();
+            const temp = wData.hourly.soil_temperature_6cm[0];
+            document.getElementById('tempDisplay').innerText = temp + "°F";
+            const advice = temp < 55 ? "Too cold for most ferts. Good for pre-emergent!" : "Prime growing temps!";
+            document.getElementById('coachAdvice').innerText = advice;
+        }
+    }
+
+    function saveLawnData() {
+        localStorage.setItem('lawnSqFt', document.getElementById('areaResult').innerText);
+        alert("Saved!");
+    }
+
+    function clearMap() { markers = []; if(polygon) map.removeLayer(polygon); document.getElementById('areaResult').innerText = "0"; }
+    window.onload = initMap;
+</script>
+</body>
+</html>
