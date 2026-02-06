@@ -196,3 +196,19 @@ h3 { margin-bottom: 15px; font-size: 1.1rem; color: #444; }
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+#levelDisplay {
+    font-family: 'Courier New', Courier, monospace;
+    text-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
+}
+
+.advice-box {
+    margin-top: 10px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+#btnSide, #btnRake {
+    transition: background 0.3s ease, transform 0.1s active;
+}
+
