@@ -8,65 +8,33 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); font-family: -apple-system, sans-serif; color: var(--text); }
 
-body { background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text); }
-
-/* --- NAVBAR WITH LOGO --- */
-.navbar {
-    background: var(--primary);
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
+/* --- NAV --- */
+.navbar { background: var(--primary); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; height: 65px;}
 .logo-area { display: flex; align-items: center; gap: 10px; }
-.app-logo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; }
-.brand-name { color: white; font-weight: 800; letter-spacing: 1px; }
+.app-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; object-fit: cover;}
+.brand-name { color: white; font-weight: 800; font-size: 0.9rem; }
+.hamburger { background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 5px 12px; border-radius: 5px; cursor: pointer; }
 
-/* --- HIDDEN MENU LOGIC (Desktop & Mobile) --- */
-.hamburger {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
+.nav-links { display: none; position: absolute; top: 65px; right: 0; width: 220px; background: white; list-style: none; box-shadow: var(--shadow); border-bottom-left-radius: 15px; overflow: hidden;}
+.nav-links.show { display: block; }
+.nav-links li a { padding: 15px 20px; display: block; text-decoration: none; color: var(--text); border-bottom: 1px solid #eee; font-size: 0.9rem;}
 
-.nav-links {
-    display: none; /* Hidden by default on all screens */
-    flex-direction: column;
-    position: absolute;
-    top: 65px;
-    right: 0;
-    width: 250px;
-    background: white;
-    box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
-    list-style: none;
-    border-radius: 0 0 0 15px;
-}
-
-.nav-links.show { display: flex; }
-.nav-links li a {
-    padding: 15px 25px;
-    display: block;
-    text-decoration: none;
-    color: var(--text);
-    border-bottom: 1px solid #eee;
-}
-
-/* --- CARDS & TOOLS --- */
-.card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
-.tool-dark { background: #2d3436; color: white; text-align: center; }
-#levelDisplay { font-size: 4rem; color: var(--accent); font-weight: 800; margin: 20px 0; }
-
-.db-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-.btn-save { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; }
-
-.page { display: none; }
+/* --- PAGE SWITCHING --- */
+.page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+/* --- CARDS --- */
+.card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.coach-accent { border-top: 5px solid var(--accent); }
+.tool-dark { background: #2d3436; color: white; text-align: center; }
+
+/* --- BUTTONS & TOOLS --- */
+.btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+.btn-tool { background: #555; border: none; color: white; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+.btn-tool.active { background: var(--accent); }
+#levelDisplay { font-size: 3.5rem; color: var(--accent); font-weight: 800; margin: 15px 0; }
+.db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.db-card { border: 1px solid #eee; padding: 10px; border-radius: 10px; font-size: 0.8rem; }
