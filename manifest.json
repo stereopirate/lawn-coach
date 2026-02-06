@@ -1,0 +1,19 @@
+{
+  "short_name": "LawnCoach",
+  "name": "Lawn Coach Pro: Turf Management",
+  "description": "Professional lawn maintenance tracking and digital tools.",
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#1b4d3e",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#1b4d3e",
+  "orientation": "portrait"
+}
