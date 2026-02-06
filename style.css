@@ -17,10 +17,11 @@ body { background: var(--bg); font-family: -apple-system, sans-serif; color: var
 .big-stat { font-size: 2.8rem; font-weight: 800; }
 .soil-text { color: var(--accent); font-weight: bold; }
 .alert-banner { background: var(--danger); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold; text-align: center; }
-.form-row { display: flex; gap: 10px; }
+.form-row { display: flex; gap: 10px; align-items: center; }
 input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; }
 .btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
 .btn-tool { background: #444; color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; cursor: pointer; }
 .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 .db-card { border: 1px solid #eee; padding: 12px; border-radius: 10px; font-size: 0.8rem; }
 .history-list { font-size: 0.85rem; max-height: 200px; overflow-y: auto; }
+.secondary-text { font-size: 0.85rem; color: #666; border-top: 1px solid #eee; padding-top: 10px; margin-top:10px; }
