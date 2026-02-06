@@ -8,9 +8,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo-area">
-            <span class="brand-name">LAWN COACH PRO</span>
-        </div>
+        <div class="logo-area"><span class="brand-name">LAWN COACH PRO</span></div>
         <button class="hamburger" id="menuToggle">☰ MENU</button>
         <ul class="nav-links" id="navLinks">
             <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
@@ -29,7 +27,6 @@
             <div class="card coach-accent">
                 <h3 class="card-title">📋 Coach's Corner</h3>
                 <div id="coachAction" class="main-advice">Sync weather to begin...</div>
-                <div id="secondaryAdvice" class="sub-advice">Select your grass type for better tips.</div>
             </div>
 
             <div class="card">
@@ -38,18 +35,9 @@
                     <button onclick="fetchWeather()" class="btn-sm">Sync</button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-box">
-                        <span class="stat-label">AIR TEMP</span>
-                        <div id="temp" class="stat-val">--°</div>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">SOIL TEMP</span>
-                        <div id="soilTempDisplay" class="stat-val highlight">--°</div>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">GDD TOTAL</span>
-                        <div id="gddTotalDisplay" class="stat-val">0</div>
-                    </div>
+                    <div class="stat-box"><span class="stat-label">AIR TEMP</span><div id="temp" class="stat-val">--°</div></div>
+                    <div class="stat-box"><span class="stat-label">SOIL TEMP</span><div id="soilTempDisplay" class="stat-val highlight">--°</div></div>
+                    <div class="stat-box"><span class="stat-label">GDD TOTAL</span><div id="gddTotalDisplay" class="stat-val">0</div></div>
                 </div>
             </div>
 
@@ -65,23 +53,15 @@
                 <select id="fertSelect" class="input-field" onchange="handleFertSelect()">
                     <option value="">-- Select Product --</option>
                     <option value="32-0-0" data-desc="High Nitrogen. Must water in.">Scott's Turf Builder</option>
-                    <option value="6-4-0" data-desc="Organic. Safe in heat. No water needed.">Milorganite</option>
-                    <option value="18-0-1" data-desc="Liquid. Foliar feed. Do not water for 24h.">Greene Punch</option>
+                    <option value="6-4-0" data-desc="Organic. Safe in heat.">Milorganite</option>
                 </select>
                 <div class="input-group">
                     <input type="number" id="lawnSize" placeholder="Sq Ft" class="input-field">
                     <input type="number" id="bagN" placeholder="N %" class="input-field">
                 </div>
-                <select id="spreaderModel" class="input-field">
-                    <option value="echo">Echo RB60</option>
-                    <option value="scotts">Scott's EdgeGuard</option>
-                    <option value="custom">-- Custom --</option>
-                </select>
-                <button onclick="calculateFertilizer()" class="btn-save">CALCULATE RATE</button>
+                <button onclick="calculateFertilizer()" class="btn-save">CALCULATE</button>
                 <div id="fertResult" class="calc-result"></div>
-                <div id="spreaderSetting" class="spreader-badge">Setting: --</div>
             </div>
-
             <div class="card">
                 <h3 class="card-title">Activity History</h3>
                 <div id="activityHistory" class="log-container"></div>
@@ -90,11 +70,10 @@
 
         <section id="garage" class="page">
             <div class="card coach-accent">
-                <h3 class="card-title">Mower Maintenance</h3>
+                <h3 class="card-title">Equipment Settings</h3>
                 <select id="mowerLibrary" class="input-field">
-                    <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
-                    <option value="Honda HRX217">Honda HRX217</option>
-                    <option value="custom">-- Custom Mower --</option>
+                    <option value="Toro TimeMaster">Toro TimeMaster</option>
+                    <option value="Honda HRX">Honda HRX</option>
                 </select>
                 <div class="input-group">
                     <label>Sharpen Every:</label>
@@ -102,30 +81,18 @@
                     <span>Mows</span>
                 </div>
                 <button onclick="saveEquipment()" class="btn-save">SAVE PROFILE</button>
-                
-                <div class="equipment-status">
-                    <div id="activeMowerDisplay" class="eq-name">No Mower Set</div>
-                    <div id="mowsSinceReset" class="eq-count">Mows since sharpen: 0</div>
-                </div>
-                <button onclick="resetBladeCounter()" class="btn-secondary">MARK BLADES SHARPENED</button>
+                <div id="activeMowerDisplay" style="margin-top:15px; font-weight:bold;"></div>
+                <button onclick="resetBladeCounter()" class="btn-secondary">RESET BLADE COUNTER</button>
             </div>
         </section>
 
         <section id="tools" class="page">
-            <div class="card dark-card">
-                <h3>Deck Leveler</h3>
-                <div id="levelDisplay" class="level-val">0.0°</div>
-                <button onclick="startLeveler()" class="btn-save">START SENSORS</button>
-            </div>
-
             <div class="card coach-accent">
                 <h3>🔍 Grass ID Quiz</h3>
                 <div id="quizContainer">
                     <p id="quizQuestion" class="quiz-text">Does the tip of the blade look like a canoe (pointed but cupped)?</p>
-                    <div class="input-group">
-                        <button onclick="quizAnswer(true)" class="btn-save">YES</button>
-                        <button onclick="quizAnswer(false)" class="btn-save" style="background:#666">NO</button>
-                    </div>
+                    <button onclick="quizAnswer(true)" class="btn-save">YES</button>
+                    <button onclick="quizAnswer(false)" class="btn-save" style="background:#666; margin-top:10px;">NO</button>
                 </div>
                 <div id="quizResult" style="display:none;">
                     <div id="quizMatchText" class="match-text"></div>
