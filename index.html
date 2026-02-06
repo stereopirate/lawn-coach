@@ -22,6 +22,11 @@
     <main id="content">
         <section id="dashboard" class="page active">
             <div class="dashboard-grid">
+                <div class="card wide" style="border: 2px solid var(--accent); background: #f0fff4;">
+                    <h3 style="margin-top:0;"><span style="font-size:1.2rem;">📋</span> Coach's Corner</h3>
+                    <div id="coachAction" style="font-size: 1rem; line-height: 1.4;">Analyzing your lawn stats...</div>
+                </div>
+
                 <div class="card">
                     <h3>Weather</h3>
                     <div id="temp" class="big-stat">--°F</div>
@@ -44,7 +49,7 @@
 
         <section id="yard" class="page">
             <div class="card">
-                <h3>Soil & Grass</h3>
+                <h3>Grass & Soil</h3>
                 <label>Grass Type</label>
                 <select id="grassTypeSelector" onchange="updateGrassType()" class="full-select">
                     <option value="tall_fescue">Tall Fescue</option>
@@ -60,19 +65,18 @@
                 </div>
             </div>
 
-            <div class="card" id="mowAdviceCard" style="background: #e8f5e9; border-left: 5px solid #27ae60;">
-                <h3>Mower Height Pro-Tip</h3>
+            <div class="card" style="background: #e8f5e9; border-left: 5px solid #27ae60;">
+                <h3>Maintenance Pro-Tip</h3>
                 <div id="mowHeightAdvice"></div>
             </div>
 
             <div class="card">
                 <h3>Project Planner</h3>
-                <p><small>Estimate topsoil, mulch, or sand.</small></p>
                 <div class="form-row">
                     <input type="number" id="projSqFt" placeholder="Area (Sq Ft)">
                     <input type="number" id="projDepth" placeholder="Depth (Inches)" step="0.5">
                 </div>
-                <button onclick="calculateMaterials()" class="btn-save" style="background:#34495e; margin-top:10px;">Calculate</button>
+                <button onclick="calculateMaterials()" class="btn-save" style="background:#34495e; margin-top:10px;">Calculate Cubic Yards</button>
                 <div id="projResult" class="advice-box" style="margin-top:10px;"></div>
             </div>
         </section>
@@ -91,9 +95,9 @@
                 <div id="equipmentList" class="history-container" style="margin-top:15px;"></div>
             </div>
 
-            <div id="activeEquipmentSection" style="display:none;">
+            <div id="mowerServiceSection" style="display:none;">
                 <div class="card">
-                    <h3 id="activeEquipName">Service Log</h3>
+                    <h3 id="activeMowerName">Mower Service Log</h3>
                     <div class="form-row">
                         <select id="serviceTask">
                             <option value="Oil Change">Oil Change</option>
@@ -108,14 +112,17 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Calibration Tool</h3>
-                <div class="form-row">
-                    <input type="number" id="bagWeight" placeholder="Bag Lbs">
-                    <input type="number" id="bagCoverage" placeholder="Coverage SqFt">
+            <div id="spreaderToolSection" style="display:none;">
+                <div class="card" style="border-left: 5px solid #f1c40f;">
+                    <h3>Spreader Calibration & Care</h3>
+                    <p><small><strong>Wash-Down Reminder:</strong> Always rinse your spreader with a hose after use. Fertilizer salts are highly corrosive to metal gears and axles!</small></p>
+                    <div class="form-row">
+                        <input type="number" id="bagWeight" placeholder="Bag Lbs">
+                        <input type="number" id="bagCoverage" placeholder="Coverage SqFt">
+                    </div>
+                    <button onclick="runCalibrationCalc()" class="btn-save" style="background:#34495e; margin-top:10px;">Get Test Weight</button>
+                    <div id="calResult" class="advice-box" style="margin-top:10px;"></div>
                 </div>
-                <button onclick="runCalibrationCalc()" class="btn-save" style="background:#34495e; margin-top:10px;">Calculate Test</button>
-                <div id="calResult" class="advice-box" style="margin-top:10px;"></div>
             </div>
         </section>
 
@@ -137,7 +144,7 @@
                         <input type="number" id="valInputP" placeholder="P">
                         <input type="number" id="valInputK" placeholder="K">
                     </div>
-                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Entry</button>
+                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Activity</button>
                 </form>
             </div>
             <div id="historyList"></div>
