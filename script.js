@@ -1,24 +1,35 @@
-let selectedEquipId = null;
-let levelMode = 'side';
+// --- SERVICE WORKER REGISTRATION ---
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
 
-// --- MENU TOGGLE ---
-const menuToggle = document.getElementById('menuToggle');
+// --- NAVIGATION ---
 const navLinks = document.getElementById('navLinks');
-menuToggle.onclick = (e) => {
+document.getElementById('menuToggle').onclick = (e) => {
     e.stopPropagation();
     navLinks.classList.toggle('show');
 };
-
 document.onclick = () => navLinks.classList.remove('show');
 
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+    const activePage = document.getElementById(pageId);
+    if (activePage) activePage.classList.add('active');
     navLinks.classList.remove('show');
-    render();
+}
+
+// --- GDD LOGIC ---
+function addGDD() {
+    const val = parseFloat(document.getElementById('manualGDD').value) || 0;
+    let total = parseFloat(localStorage.getItem('totalGDD')) || 0;
+    total += val;
+    localStorage.setItem('totalGDD', total);
+    document.getElementById('manualGDD').value = '';
+    updateUI();
 }
 
 // --- LEVELER ---
+let levelMode = 'side';
 function setLevelMode(mode) {
     levelMode = mode;
     document.getElementById('btnSide').classList.toggle('active', mode === 'side');
@@ -36,16 +47,28 @@ function startLeveler() {
 }
 
 function handleLevel(e) {
-    let angle = levelMode === 'side' ? e.gamma : e.beta;
-    const display = document.getElementById('levelDisplay');
-    display.innerText = angle.toFixed(1) + "°";
-    display.style.color = Math.abs(angle) < 0.5 ? "#27ae60" : "#ff7675";
+    let angle = (levelMode === 'side') ? e.gamma : e.beta;
+    document.getElementById('levelDisplay').innerText = angle.toFixed(1) + "°";
 }
 
-// --- INITIALIZE & RENDER ---
-function render() {
-    // Logic for Grass DB, Photo Gallery, and Coach Corner...
-    // Ensure renderFungusLibrary() and renderGrassDB() are called here
+// --- UI UPDATES ---
+function updateUI() {
+    const totalGDD = localStorage.getItem('totalGDD') || 0;
+    const gddDisplay = document.getElementById('gddTotalDisplay');
+    if (gddDisplay) gddDisplay.innerText = `Total Season GDD: ${Math.round(totalGDD)}`;
+    
+    // Auto-populate Grass Library if empty
+    const grassGrid = document.getElementById('grassGrid');
+    if (grassGrid && grassGrid.children.length === 0) {
+        const grasses = [
+            {n:'Tall Fescue', f:'Bunch type, wide blade'},
+            {n:'Kentucky Blue', f:'Boat-shaped tip, soft'},
+            {n:'Bermuda', f:'Warm season, aggressive'},
+            {n:'St. Augustine', f:'Wide rounded blades'}
+        ];
+        grassGrid.innerHTML = grasses.map(g => `<div class="db-card"><b>${g.n}</b><br>${g.f}</div>`).join('');
+    }
 }
 
-window.onload = render;
+// Ensure UI updates on load
+window.onload = updateUI;
