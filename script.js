@@ -1,59 +1,78 @@
 let mowingChart = null;
-const API_KEY = '9e2c8cda4fb95a6d8392dd058bab70da';
+const API_KEY = '9e2c8cda4fb95a6d8392dd058bab70da'; 
+let selectedEquipId = null;
 
-const MOWER_SPECS = {
-    "Toro TimeMaster 30\"": { oil: 50, blade: 25, width: 30 },
-    "Honda HRX217": { oil: 50, blade: 25, width: 21 },
-    "Default": { oil: 50, blade: 20, width: 21 }
+// --- INITIALIZATION ---
+window.onload = () => {
+    const zip = localStorage.getItem('lawnZip');
+    if (zip) { 
+        document.getElementById('zipCode').value = zip; 
+        fetchWeather(zip); 
+    }
+    document.getElementById('yardSqFtInput').value = localStorage.getItem('yardSqFt') || '';
+    render();
 };
 
-const GRASS_PROFILES = {
-    tall_fescue: { name: "Tall Fescue", water: 1.5, height: 3.5, notch: "6" },
-    bermuda: { name: "Bermuda", water: 1.0, height: 1.5, notch: "2" }
+// --- MENU FIX ---
+document.getElementById('menuToggle').onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('navLinks').classList.toggle('show');
 };
 
-function saveGrowth() {
-    const h = parseFloat(document.getElementById('grassHeight').value);
-    const profile = GRASS_PROFILES[localStorage.getItem('grassType') || 'tall_fescue'];
-    localStorage.setItem('lastHeight', h);
-    
-    // One-Third Rule Check
-    const maxCut = h * 0.33;
-    const actualCut = h - profile.height;
-    
-    let advice = actualCut > maxCut ? "⚠️ <b>Warning:</b> You are cutting more than 1/3 of the blade. Raise your mower height!" : "✅ Growth looks healthy for a cut.";
-    document.getElementById('growthAdvice').innerHTML = advice;
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.getElementById('navLinks').classList.remove('show');
     render();
 }
 
+// --- COACH'S CORNER REPAIR ---
 function updateCoachCorner() {
-    const soilTemp = parseFloat(localStorage.getItem('soilTemp'));
-    const moisture = parseFloat(localStorage.getItem('soilMoisture'));
+    const logs = JSON.parse(localStorage.getItem('lawnLogs') || '[]');
+    const grassKey = localStorage.getItem('grassType') || 'tall_fescue';
+    const profile = GRASS_PROFILES[grassKey];
+    const soilTemp = parseFloat(localStorage.getItem('soilTemp')) || 0;
+    const moisture = parseFloat(localStorage.getItem('soilMoisture')) || 0;
     const coachDiv = document.getElementById('coachAction');
 
-    if (soilTemp >= 50 && soilTemp <= 55) {
-        coachDiv.innerHTML = "🏃 <b>Sprint!</b> Soil temp is 55°F. Get your pre-emergent down today.";
-    } else if (moisture < 20) {
-        coachDiv.innerHTML = "💦 <b>Dry Soil:</b> Moisture is below 20%. Plan a deep soak.";
+    if (!coachDiv) return;
+
+    if (soilTemp > 0 && soilTemp <= 55) {
+        coachDiv.innerHTML = "🎯 <b>Soil Temp Alert:</b> Window for Pre-Emergent is open (55°F).";
+    } else if (moisture > 0 && moisture < 25) {
+        coachDiv.innerHTML = "🌵 <b>Drought Stress:</b> Soil moisture is low. Deep water tomorrow.";
     } else {
-        coachDiv.innerHTML = "👍 Lawn is stable. Follow your standard schedule.";
+        coachDiv.innerHTML = `✅ ${profile.name} status: Optimal. Cut at <b>${profile.height}</b>.`;
     }
 }
 
-function calculateFertNeeded() {
-    const target = parseFloat(document.getElementById('targetN').value);
-    const nPct = parseFloat(document.getElementById('bagN').value) / 100;
-    const weight = parseFloat(document.getElementById('fertBagWeight').value);
-    if (target && nPct && weight) {
-        const totalLbs = (target / nPct) * 5; // Assumes 5k sq ft yard
-        document.getElementById('fertResult').innerHTML = `Need <b>${(totalLbs/weight).toFixed(1)} bags</b>.`;
-    }
-}
-
-// ... Additional helper functions for render, equipment, and weather ...
-function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+// --- DATA SAVING ---
+function saveYardSize() {
+    const val = document.getElementById('yardSqFtInput').value;
+    localStorage.setItem('yardSqFt', val);
     render();
 }
-window.onload = render;
+
+function saveSoilHealth() {
+    localStorage.setItem('soilTemp', document.getElementById('soilTemp').value);
+    localStorage.setItem('soilMoisture', document.getElementById('soilMoisture').value);
+    render();
+}
+
+// --- WEATHER REPAIR ---
+async function fetchWeather(zip) {
+    const tempDiv = document.getElementById('temp');
+    try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip},us&units=imperial&appid=${API_KEY}`);
+        const data = await res.json();
+        if (data.cod === 200) {
+            tempDiv.innerText = Math.round(data.main.temp) + '°F';
+        } else {
+            tempDiv.innerText = "Error";
+        }
+    } catch (e) {
+        tempDiv.innerText = "Offline";
+    }
+}
+
+// (Keep existing addEquipment, saveService, and renderChart functions here)
