@@ -1,10 +1,10 @@
-:root { --primary: #1b4d3e; --accent: #27ae60; --bg: #f4f7f6; --text: #2d3436; --card: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.1); }
+:root { --primary: #1b4d3e; --accent: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; --text: #2d3436; --card: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.1); }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); font-family: -apple-system, sans-serif; color: var(--text); }
-.navbar { background: var(--primary); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index:1000; height:65px; }
+body { background: var(--bg); font-family: -apple-system, sans-serif; color: var(--text); overflow-x: hidden; }
+.navbar { background: var(--primary); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index:1000; height:65px; border-bottom: 2px solid var(--accent); }
 .logo-area { display: flex; align-items: center; gap: 10px; }
 .app-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
-.brand-name { color: white; font-weight: 800; font-size: 0.9rem; }
+.brand-name { color: white; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; }
 .hamburger { background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
 .nav-links { display: none; position: absolute; top: 65px; right: 0; width: 240px; background: white; list-style: none; box-shadow: var(--shadow); border-bottom-left-radius: 15px; }
 .nav-links.show { display: block; }
@@ -14,10 +14,13 @@ body { background: var(--bg); font-family: -apple-system, sans-serif; color: var
 .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
 .coach-accent { border-top: 5px solid var(--accent); }
 .tool-dark { background: #2d3436; color: white; text-align: center; }
+.big-stat { font-size: 2.8rem; font-weight: 800; }
+.soil-text { color: var(--accent); font-weight: bold; }
+.alert-banner { background: var(--danger); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold; text-align: center; }
 .form-row { display: flex; gap: 10px; }
-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; }
 .btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
 .btn-tool { background: #444; color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; cursor: pointer; }
-.big-stat { font-size: 2.5rem; font-weight: 800; }
-.db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.db-card { border: 1px solid #eee; padding: 10px; border-radius: 10px; font-size: 0.8rem; }
+.db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.db-card { border: 1px solid #eee; padding: 12px; border-radius: 10px; font-size: 0.8rem; }
+.history-list { font-size: 0.85rem; max-height: 200px; overflow-y: auto; }
