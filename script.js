@@ -1,3 +1,5 @@
+let mowingChart = null;
+
 // --- NAVIGATION ---
 const navLinks = document.getElementById('navLinks');
 const menuToggle = document.getElementById('menuToggle');
@@ -12,6 +14,7 @@ document.onclick = () => navLinks.classList.remove('show');
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    if (pageId === 'dashboard') renderChart();
 }
 
 // --- WEATHER & ZIP ---
@@ -35,12 +38,11 @@ function saveZip() {
     }
 }
 
-// --- LOGGING & DELETE ---
+// --- LOGGING & CHART ---
 const activityForm = document.getElementById('activityForm');
 const actType = document.getElementById('actType');
 const actAmount = document.getElementById('actAmount');
 
-// Toggle "Amount" field for water
 actType.onchange = () => {
     actAmount.style.display = actType.value === 'Water' ? 'block' : 'none';
 };
@@ -68,11 +70,38 @@ function deleteLog(id) {
     render();
 }
 
+function renderChart() {
+    const logs = JSON.parse(localStorage.getItem('lawnLogs') || '[]');
+    const mows = logs.filter(l => l.type === 'Mow').sort((a,b) => new Date(a.date) - new Date(b.date));
+    
+    // Group mows by date for the chart
+    const dataPoints = mows.map(m => m.date);
+    const counts = dataPoints.map((_, i) => i + 1);
+
+    const ctx = document.getElementById('mowingChart').getContext('2d');
+    if (mowingChart) mowingChart.destroy();
+    
+    mowingChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dataPoints,
+            datasets: [{
+                label: 'Cumulative Mows',
+                data: counts,
+                borderColor: '#27ae60',
+                backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+}
+
 function render() {
     const logs = JSON.parse(localStorage.getItem('lawnLogs') || '[]');
     const historyList = document.getElementById('historyList');
     
-    // Calculate Water Goal (Last 7 Days)
     const totalWater = logs
         .filter(l => l.type === 'Water')
         .reduce((sum, l) => sum + l.amount, 0);
@@ -81,7 +110,6 @@ function render() {
     const pct = Math.min((totalWater / 1.5) * 100, 100);
     document.getElementById('waterBar').style.width = pct + '%';
 
-    // Render List
     historyList.innerHTML = logs.slice().reverse().map(log => `
         <div class="history-item">
             <div>
@@ -91,6 +119,8 @@ function render() {
             <button class="btn-delete" onclick="deleteLog(${log.id})">🗑️</button>
         </div>
     `).join('');
+    
+    renderChart();
 }
 
 window.onload = () => {
