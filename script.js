@@ -1,7 +1,21 @@
-// --- SERVICE WORKER REGISTRATION ---
+// --- INITIALIZATION ---
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
+
+// Databases
+const grassData = [
+    { name: "Tall Fescue", type: "Cool Season", features: "Wide blades, bunch-type growth, deep green." },
+    { name: "Kentucky Bluegrass", type: "Cool Season", features: "Boat-shaped tips, soft texture, spreads via rhizomes." },
+    { name: "Bermuda", type: "Warm Season", features: "Fine texture, aggressive spreader, dormant in winter." },
+    { name: "St. Augustine", type: "Warm Season", features: "Wide, rounded blades, coarse texture, salt-tolerant." }
+];
+
+const fungusData = [
+    { name: "Brown Patch", symptoms: "Circular brown patches. Common in humidity/heat." },
+    { name: "Dollar Spot", symptoms: "Small spots (silver dollar size). Hourglass leaf lesions." },
+    { name: "Red Thread", symptoms: "Pink/Red threads on leaf tips. Common in cool, wet weather." }
+];
 
 // --- NAVIGATION ---
 const navLinks = document.getElementById('navLinks');
@@ -16,6 +30,19 @@ function showPage(pageId) {
     const activePage = document.getElementById(pageId);
     if (activePage) activePage.classList.add('active');
     navLinks.classList.remove('show');
+    updateUI(); // Refresh content for the specific page
+}
+
+// --- EQUIPMENT & BLADES ---
+function resetBladeCounter() {
+    localStorage.setItem('mowsAtLastSharpen', getCurrentMowCount());
+    updateUI();
+}
+
+function getCurrentMowCount() {
+    // This looks at your logs. If no logs exist, it defaults to 0.
+    const logs = JSON.parse(localStorage.getItem('lawnLogs') || '[]');
+    return logs.filter(l => l.type === 'Mow').length;
 }
 
 // --- GDD LOGIC ---
@@ -28,7 +55,7 @@ function addGDD() {
     updateUI();
 }
 
-// --- LEVELER ---
+// --- DIGITAL TOOLS ---
 let levelMode = 'side';
 function setLevelMode(mode) {
     levelMode = mode;
@@ -49,26 +76,72 @@ function startLeveler() {
 function handleLevel(e) {
     let angle = (levelMode === 'side') ? e.gamma : e.beta;
     document.getElementById('levelDisplay').innerText = angle.toFixed(1) + "°";
+    document.getElementById('levelAdvice').innerText = Math.abs(angle) < 0.5 ? "PERFECTLY LEVEL" : (angle > 0 ? "LOW ON LEFT/FRONT" : "LOW ON RIGHT/BACK");
 }
 
-// --- UI UPDATES ---
+// --- PHOTO UPLOAD ---
+function uploadPhoto() {
+    const file = document.getElementById('photoInput').files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        let photos = JSON.parse(localStorage.getItem('lawnPhotos') || '[]');
+        photos.unshift({ date: new Date().toLocaleDateString(), data: reader.result });
+        if (photos.length > 4) photos.pop(); 
+        localStorage.setItem('lawnPhotos', JSON.stringify(photos));
+        updateUI();
+    };
+    if (file) reader.readAsDataURL(file);
+}
+
+// --- CORE UI UPDATE ---
 function updateUI() {
+    // GDD Update
     const totalGDD = localStorage.getItem('totalGDD') || 0;
     const gddDisplay = document.getElementById('gddTotalDisplay');
     if (gddDisplay) gddDisplay.innerText = `Total Season GDD: ${Math.round(totalGDD)}`;
-    
-    // Auto-populate Grass Library if empty
+
+    // Blade Counter Update
+    const mowsDisplay = document.getElementById('mowsSinceReset');
+    if (mowsDisplay) {
+        const lastReset = parseInt(localStorage.getItem('mowsAtLastSharpen') || 0);
+        const current = getCurrentMowCount();
+        mowsDisplay.innerText = `Mows since sharpen: ${current - lastReset}`;
+    }
+
+    // Grass Grid Update
     const grassGrid = document.getElementById('grassGrid');
-    if (grassGrid && grassGrid.children.length === 0) {
-        const grasses = [
-            {n:'Tall Fescue', f:'Bunch type, wide blade'},
-            {n:'Kentucky Blue', f:'Boat-shaped tip, soft'},
-            {n:'Bermuda', f:'Warm season, aggressive'},
-            {n:'St. Augustine', f:'Wide rounded blades'}
-        ];
-        grassGrid.innerHTML = grasses.map(g => `<div class="db-card"><b>${g.n}</b><br>${g.f}</div>`).join('');
+    if (grassGrid) {
+        grassGrid.innerHTML = grassData.map(g => `
+            <div class="db-card">
+                <strong>${g.name}</strong><br>
+                <small>${g.features}</small>
+            </div>
+        `).join('');
+    }
+
+    // Fungus Grid Update
+    const fungusGrid = document.getElementById('fungusLibrary');
+    if (fungusGrid) {
+        fungusGrid.innerHTML = fungusData.map(f => `
+            <div class="db-card" style="border-top: 3px solid var(--accent);">
+                <strong>${f.name}</strong><br>
+                <small>${f.symptoms}</small>
+            </div>
+        `).join('');
+    }
+
+    // Photo Grid Update
+    const photoGrid = document.getElementById('photoGrid');
+    if (photoGrid) {
+        const photos = JSON.parse(localStorage.getItem('lawnPhotos') || '[]');
+        photoGrid.innerHTML = photos.map(p => `
+            <div class="db-card">
+                <img src="${p.data}" style="width:100%; border-radius:5px;">
+                <div style="font-size:10px; text-align:center;">${p.date}</div>
+            </div>
+        `).join('');
     }
 }
 
-// Ensure UI updates on load
+// Run update on load
 window.onload = updateUI;
