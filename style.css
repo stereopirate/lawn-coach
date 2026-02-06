@@ -50,3 +50,15 @@ body { background: var(--bg); font-family: -apple-system, sans-serif; margin: 0;
 
 .npk-inputs { display: flex; gap: 5px; margin-top: 10px; }
 .npk-inputs input { width: 33%; }
+/* Add these to your existing CSS file */
+:root {
+    --bg: #f0f2f5;
+    --accent: #27ae60;
+    --text: #2d3436;
+    --danger: #ff7675;
+}
+
+.history-container { max-height: 300px; overflow-y: auto; }
+.btn-delete { background: none; border: none; color: var(--danger); font-size: 1rem; padding: 5px; }
+
+/* Keep your existing .navbar, .card, .big-stat, etc. from previous files */
