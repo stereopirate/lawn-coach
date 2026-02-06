@@ -1,108 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lawn Coach Pro</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="logo-container">
-            <span class="brand-name">LAWN COACH</span>
+<section id="garage" class="page">
+    <div class="card">
+        <h3>Equipment Manager</h3>
+        <div class="form-row">
+            <select id="mowerSelect" class="full-select"></select>
+            <button onclick="addEquipment('mower')" class="btn-save">Add Mower</button>
         </div>
-        <button class="hamburger" id="menuToggle">☰</button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
-            <li><a href="#" onclick="showPage('activities')">Activities</a></li>
-            <li><a href="#" onclick="showPage('garage')">Garage</a></li>
-        </ul>
-    </nav>
+        <div class="form-row" style="margin-top:10px;">
+            <select id="spreaderSelect" class="full-select"></select>
+            <button onclick="addEquipment('spreader')" class="btn-save">Add Spreader</button>
+        </div>
+        <div id="equipmentList" class="history-container"></div>
+    </div>
 
-    <main id="content">
-        <section id="dashboard" class="page active">
-            <div class="dashboard-grid">
-                <div class="card weather-card">
-                    <h3>Current Weather</h3>
-                    <div id="temp" class="big-stat">--°F</div>
-                    <p id="weatherDesc">Enter ZIP to start</p>
-                    <div class="zip-input-group">
-                        <input type="text" id="zipCode" placeholder="ZIP" maxlength="5">
-                        <button onclick="saveZip()">Update</button>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>7-Day Water</h3>
-                    <div class="big-stat" id="waterStat">0 / 1.5"</div>
-                    <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill" style="background: #3498db;"></div></div>
-                </div>
-
-                <div class="card">
-                    <h3>Soil Nutrients</h3>
-                    <div class="nutrient-grid">
-                        <div class="n-stat">N <span id="valN">0</span></div>
-                        <div class="p-stat">P <span id="valP">0</span></div>
-                        <div class="k-stat">K <span id="valK">0</span></div>
-                    </div>
-                    <p><small>Total lbs applied this season</small></p>
-                </div>
-
-                <div class="card wide">
-                    <h3>Mowing Trends</h3>
-                    <div style="position: relative; height:200px; width:100%">
-                        <canvas id="mowingChart"></canvas>
-                    </div>
-                </div>
+    <div id="activeEquipmentSection" style="display:none;">
+        <div class="card">
+            <h3 id="activeEquipName">Service Log</h3>
+            <div class="form-row">
+                <select id="serviceTask">
+                    <option value="Oil Change">Oil Change</option>
+                    <option value="Blade Sharpen">Blade Sharpen</option>
+                    <option value="Air Filter">Air Filter</option>
+                    <option value="Spark Plug">Spark Plug</option>
+                </select>
+                <input type="date" id="serviceDate">
+                <button onclick="saveService()" class="btn-save" style="width:auto;">Log</button>
             </div>
-        </section>
-
-        <section id="activities" class="page">
-            <div class="card">
-                <h3>Log Activity</h3>
-                <form id="activityForm">
-                    <div class="form-row">
-                        <select id="actType" onchange="toggleInputs()">
-                            <option value="Mow">Mow</option>
-                            <option value="Water">Water</option>
-                            <option value="Fertilize">Fertilize (N-P-K)</option>
-                        </select>
-                        <input type="date" id="actDate" required>
-                    </div>
-                    
-                    <div id="waterInput" class="extra-input" style="display:none;">
-                        <input type="number" id="actAmount" placeholder="Inches" step="0.1">
-                    </div>
-                    
-                    <div id="fertInput" class="extra-input" style="display:none;">
-                        <div class="npk-inputs">
-                            <input type="number" id="valInputN" placeholder="N" step="0.1">
-                            <input type="number" id="valInputP" placeholder="P" step="0.1">
-                            <input type="number" id="valInputK" placeholder="K" step="0.1">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Activity</button>
-                </form>
-            </div>
-            <div id="historyList" class="history-container"></div>
-        </section>
-
-        <section id="garage" class="page">
-            <div class="card">
-                <h3>Maintenance Alerts</h3>
-                <div id="maintAlerts">
-                    </div>
-                <hr>
-                <div class="maint-item">
-                    <p>Mows since last blade sharpen</p>
-                    <div class="big-stat" id="mowCountMaint">0</div>
-                    <button class="btn-reset" onclick="resetMaintenance('blade')">Reset Blade Timer</button>
-                </div>
-            </div>
-        </section>
-    </main>
-    <script src="script.js"></script>
-</body>
-</html>
+            <div id="activeServiceHistory"></div>
+        </div>
+    </div>
+</section>
