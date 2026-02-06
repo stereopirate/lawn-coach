@@ -26,85 +26,80 @@
 
     <main id="content">
         <section id="dashboard" class="page active">
-            <div class="card wide coach-accent">
+            <div id="coachContainer" class="card wide coach-accent">
                 <h3>📋 Coach's Corner</h3>
-                <div id="coachAction">Standby for coaching...</div>
+                <div id="coachAction">Enter Zip to start coaching...</div>
+                <div id="secondaryAdvice" style="font-size: 0.85rem; color: #666; border-top: 1px solid #eee; padding-top: 10px; margin-top:10px;"></div>
             </div>
-            <div class="dashboard-grid">
-                <div class="card">
-                    <h3>Environment</h3>
-                    <div id="temp" class="big-stat">--°F</div>
-                    <div id="gddTotalDisplay" style="font-weight:bold; margin-top:10px;">Total GDD: 0</div>
+
+            <div class="card">
+                <h3>Live Weather & GDD</h3>
+                <div class="form-row" style="margin-bottom:15px;">
+                    <input type="text" id="zipCode" placeholder="Zip Code">
+                    <button onclick="fetchWeather()" class="btn-save" style="width:100px">Update</button>
+                </div>
+                <div class="db-grid">
+                    <div>
+                        <div id="temp" class="big-stat">--°F</div>
+                        <div id="soilTempDisplay" style="color:var(--accent); font-weight:bold;">Soil: --°F</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div id="gddToday" style="font-size:1.2rem; font-weight:bold;">Today: +0</div>
+                        <div id="gddTotalDisplay">Total: 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card coach-accent">
+                <h3>Quick Log</h3>
+                <div class="form-row">
+                    <button onclick="logActivity('Mow')" class="btn-tool" style="background:var(--primary)">🚜 Log Mow</button>
+                    <button onclick="logActivity('Fertilize')" class="btn-tool" style="background:var(--accent)">🌱 Log Fert</button>
                 </div>
             </div>
         </section>
 
         <section id="yard" class="page">
             <div class="card coach-accent">
-                <h3>Growth Tracking (GDD)</h3>
+                <h3>Fertilizer Calculator</h3>
                 <div class="form-row">
-                    <input type="number" id="manualGDD" placeholder="Today's GDD">
-                    <button onclick="addGDD()" class="btn-save" style="width:80px">Add</button>
+                    <input type="number" id="lawnSize" placeholder="Sq Ft">
+                    <input type="number" id="bagN" placeholder="N %">
                 </div>
+                <button onclick="calculateFertilizer()" class="btn-save" style="margin-top:10px">Calc Lbs</button>
+                <div id="fertResult" style="margin-top:10px; font-weight:bold; color:var(--primary);"></div>
             </div>
             <div class="card">
-                <h3>Soil Test Tracker</h3>
-                <div class="form-row">
-                    <input type="number" step="0.1" id="soilPH" placeholder="pH Level">
-                    <input type="number" id="soilN" placeholder="Nitrogen (ppm)">
-                </div>
-                <button onclick="saveSoilTest()" class="btn-save" style="margin-top:10px">Save Soil Data</button>
-                <div id="soilDisplay" style="margin-top:15px; font-size: 0.9rem; border-top: 1px solid #eee; pt: 10px;"></div>
+                <h3>Soil Record</h3>
+                <div class="form-row"><input id="soilPH" placeholder="pH"><input id="soilN" placeholder="Nitrogen"></div>
+                <button onclick="saveSoilTest()" class="btn-save" style="margin-top:10px">Save</button>
+                <div id="soilDisplay" style="margin-top:10px; font-size:0.8rem;"></div>
             </div>
         </section>
 
         <section id="garage" class="page">
+            <div id="garageAlert" class="card" style="display:none; background:#e74c3c; color:white;">⚠️ SHARPEN BLADES NOW</div>
             <div class="card coach-accent">
-                <h3>Equipment Manager</h3>
-                <select id="mowerSelect" class="btn-save" style="background:white; color:black; border:1px solid #ccc; margin-bottom:10px;">
-                    <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
-                    <option value="Honda HRX217">Honda HRX217</option>
-                    <option value="Other">Other Mower</option>
-                </select>
-                <button onclick="saveEquipment()" class="btn-save">Set Active Mower</button>
-                <div id="activeMowerDisplay" style="margin-top:10px; font-weight:bold;"></div>
-                <hr style="margin:20px 0; opacity:0.1">
-                <div id="mowsSinceReset" style="font-size:1.2rem; margin-bottom:10px">Mows: 0</div>
-                <button onclick="resetBladeCounter()" class="btn-save" style="background:#555">Mark Blades Sharpened</button>
+                <h3>Equipment</h3>
+                <div id="activeMowerDisplay" style="font-weight:bold; margin-bottom:10px;"></div>
+                <div id="mowsSinceReset">Mows: 0</div>
+                <button onclick="resetBladeCounter()" class="btn-save" style="background:#555; margin-top:10px;">Reset Blades</button>
             </div>
         </section>
 
         <section id="tools" class="page">
             <div class="card tool-dark">
-                <h3>📐 Precision Deck Leveler</h3>
-                <div class="form-row" style="margin-bottom:20px;">
-                    <button onclick="setLevelMode('side')" id="btnSide" class="btn-tool active">Side-to-Side</button>
-                    <button onclick="setLevelMode('rake')" id="btnRake" class="btn-tool">Front-to-Back</button>
-                </div>
+                <h3>Precision Leveler</h3>
                 <div id="levelDisplay">0.0°</div>
-                <div id="levelAdvice">READY</div>
-                <button onclick="startLeveler()" class="btn-save" style="background:var(--accent)">Start Sensors</button>
+                <button onclick="startLeveler()" class="btn-save">Start Sensors</button>
             </div>
         </section>
 
         <section id="gallery" class="page">
-            <div class="card">
-                <h3>Lawn Journal</h3>
-                <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto()">
-                <div id="photoGrid" class="db-grid" style="margin-top:15px"></div>
-            </div>
-            <div class="card">
-                <h3>Fungus ID</h3>
-                <div id="fungusLibrary" class="db-grid"></div>
-            </div>
+            <div class="card"><h3>Journal</h3><input type="file" onchange="uploadPhoto()"><div id="photoGrid" class="db-grid"></div></div>
+            <div class="card"><h3>Fungus Library</h3><div id="fungusLibrary" class="db-grid"></div></div>
         </section>
-
-        <section id="grass-db" class="page">
-            <div class="card">
-                <h3>Grass Library</h3>
-                <div id="grassGrid" class="db-grid"></div>
-            </div>
-        </section>
+        <section id="grass-db" class="page"><div class="card"><h3>Grass Library</h3><div id="grassGrid" class="db-grid"></div></div></section>
     </main>
     <script src="script.js"></script>
 </body>
