@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawn Coach</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="logo.png" alt="Lawn Coach Logo" class="logo-img">
+            <span class="brand-name">LAWN COACH</span>
+        </div>
+        <button class="hamburger" id="menuToggle">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+            <li><a href="#" onclick="showPage('activities')">Activities</a></li>
+            <li><a href="#" onclick="showPage('garage')">Garage</a></li>
+        </ul>
+    </nav>
+
+    <main id="content">
+        <section id="dashboard" class="page active">
+            <div class="dashboard-grid">
+                <div class="card weather-card">
+                    <h3>Current Weather</h3>
+                    <div id="temp" class="big-stat">--°F</div>
+                    <p id="weatherDesc">Loading...</p>
+                </div>
+                <div class="card">
+                    <h3>Weekly Water Goal</h3>
+                    <div class="big-stat">0.75 / 1.5"</div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%; background: #3498db;"></div></div>
+                </div>
+                <div class="card">
+                    <h3>Health Score</h3>
+                    <div class="big-stat" style="color: #2ecc71;">85</div>
+                    <p>Lawn is thriving</p>
+                </div>
+                <div class="card wide">
+                    <h3>Upcoming Tasks</h3>
+                    <ul class="task-list">
+                        <li>🚜 Mow Lawn: Friday</li>
+                        <li>💧 Watering: Saturday Morning</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities" class="page">
+            <div class="card">
+                <h3>Log Activity</h3>
+                <form id="activityForm">
+                    <select id="actType">
+                        <option value="Mow">Mow</option>
+                        <option value="Water">Water</option>
+                    </select>
+                    <input type="date" id="actDate">
+                    <button type="submit" class="btn-save">Save</button>
+                </form>
+            </div>
+            <div id="historyList" class="history-container"></div>
+        </section>
+
+        <section id="garage" class="page">
+            <div class="card">
+                <h3>Equipment: Mower</h3>
+                <p>Oil Life</p>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 80%; background: #f1c40f;"></div></div>
+                <p>Blade Life</p>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 40%; background: #e67e22;"></div></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
