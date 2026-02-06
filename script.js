@@ -10,11 +10,23 @@ menuToggle.addEventListener('click', (e) => {
     navLinks.classList.toggle('show');
 });
 
-document.addEventListener('click', () => navLinks.classList.remove('show'));
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && e.target !== menuToggle) {
+        navLinks.classList.remove('show');
+    }
+});
 
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    
+    // Scroll to top when changing pages
+    window.scrollTo(0,0);
+    
+    // Close mobile menu after selection
+    navLinks.classList.remove('show');
+    
     if (pageId === 'dashboard') render();
 }
 
@@ -101,7 +113,9 @@ function render() {
 
 function renderChart(logs) {
     const mows = logs.filter(l => l.type === 'Mow').sort((a,b) => new Date(a.date) - new Date(b.date));
-    const ctx = document.getElementById('mowingChart').getContext('2d');
+    const canvas = document.getElementById('mowingChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (mowingChart) mowingChart.destroy();
     mowingChart = new Chart(ctx, {
         type: 'line',
