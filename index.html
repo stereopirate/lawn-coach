@@ -22,7 +22,7 @@
     </nav>
 
     <main id="content">
-        <section id="dashboard" class="page active">
+        <section id="dashboard" class="page">
             <div class="card coach-accent">
                 <h3 class="card-title">📋 Current Status</h3>
                 <div id="coachAction" class="main-advice">Sync weather to begin...</div>
@@ -54,11 +54,6 @@
                 <button onclick="logActivity('Mow')" class="btn-main mow-btn">🚜 LOG MOW</button>
                 <button onclick="logActivity('Fertilize')" class="btn-main fert-btn">🌱 LOG FERT</button>
             </div>
-
-            <div class="card">
-                <h3 class="card-title">Recent Activity</h3>
-                <div id="activityHistory" class="log-container"></div>
-            </div>
         </section>
 
         <section id="yard" class="page">
@@ -67,8 +62,8 @@
                 <select id="fertSelect" class="input-field" onchange="handleFertSelect()">
                     <option value="">-- Select Product --</option>
                     <option value="32-0-0" data-desc="High Nitrogen. Must water in.">Scott's Turf Builder</option>
-                    <option value="6-4-0" data-desc="Slow-release organic. Safe in heat.">Milorganite</option>
-                    <option value="18-0-1" data-desc="Liquid leaf feed. Do not water for 24h.">Greene Punch</option>
+                    <option value="6-4-0" data-desc="Organic. Safe in heat.">Milorganite</option>
+                    <option value="18-0-1" data-desc="Liquid. Do not water for 24h.">Greene Punch</option>
                 </select>
                 <div class="input-group">
                     <input type="number" id="lawnSize" placeholder="Sq Ft" class="input-field">
@@ -77,27 +72,36 @@
                 <select id="spreaderModel" class="input-field">
                     <option value="echo">Echo RB60</option>
                     <option value="scotts">Scott's EdgeGuard</option>
-                    <option value="custom">-- Custom --</option>
+                    <option value="custom">-- Custom Spreader --</option>
                 </select>
                 <button onclick="calculateFertilizer()" class="btn-save">CALCULATE RATE</button>
                 <div id="fertResult" class="calc-result"></div>
                 <div id="spreaderSetting" class="spreader-badge">Setting: --</div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Activity Log</h3>
+                <div id="activityHistory" class="log-container"></div>
             </div>
         </section>
 
         <section id="garage" class="page">
             <div id="garageAlert" class="alert-strip" style="display:none;">⚠️ MAINTENANCE OVERDUE</div>
             <div class="card coach-accent">
-                <h3 class="card-title">Mower Settings</h3>
+                <h3 class="card-title">Equipment Settings</h3>
                 <select id="mowerLibrary" class="input-field" onchange="toggleCustomMower()">
                     <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
                     <option value="custom">-- Custom Mower --</option>
                 </select>
+                <div id="customMowerInput" style="display:none; margin-top:10px;">
+                    <input type="text" id="newMowerName" placeholder="Mower Name" class="input-field">
+                </div>
                 <div class="input-group">
-                    <label>Sharpen Every:</label>
+                    <label>Sharpen Interval (Mows):</label>
                     <input type="number" id="maintInterval" value="5" class="input-field" style="width:60px">
                 </div>
                 <button onclick="saveEquipment()" class="btn-save">SAVE PROFILE</button>
+                
                 <div class="equipment-status">
                     <div id="activeMowerDisplay" class="eq-name">No Mower Set</div>
                     <div id="mowsSinceReset" class="eq-count">Mows: 0</div>
@@ -112,10 +116,11 @@
                 <div id="levelDisplay" class="level-val">0.0°</div>
                 <button onclick="startLeveler()" class="btn-save">START SENSORS</button>
             </div>
+
             <div class="card coach-accent">
                 <h3>🔍 Grass ID Quiz</h3>
                 <div id="quizContainer">
-                    <p id="quizQuestion" class="quiz-text">Does the tip of the blade look like a canoe?</p>
+                    <p id="quizQuestion" class="quiz-text">Does the tip of the blade look like a canoe (pointed but cupped)?</p>
                     <div class="input-group">
                         <button onclick="quizAnswer(true)" class="btn-save">YES</button>
                         <button onclick="quizAnswer(false)" class="btn-save" style="background:#666">NO</button>
