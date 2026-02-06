@@ -1,3 +1,4 @@
+// --- DATABASES ---
 const grassData = [{n:"Tall Fescue", f:"Mow 3.5-4\""}, {n:"Kentucky Blue", f:"Mow 2.5-3\""}, {n:"Bermuda", f:"Mow 1-2\""}];
 
 // --- NAVIGATION ---
@@ -8,7 +9,7 @@ function showPage(p) { document.querySelectorAll('.page').forEach(pg => pg.class
 // --- WEATHER & GDD ---
 async function fetchWeather() {
     const zip = document.getElementById('zipCode').value;
-    if (!zip) return;
+    if (!zip) return alert("Enter Zip Code");
     try {
         const geo = await fetch(`https://api.zippopotam.us/us/${zip}`).then(r => r.json());
         const { latitude: lat, longitude: lon } = geo.places[0];
@@ -17,38 +18,52 @@ async function fetchWeather() {
         localStorage.setItem('lastGDDValue', Math.max(0, Math.round(((res.daily.temperature_2m_max[0] + res.daily.temperature_2m_min[0]) / 2) - 50)));
         localStorage.setItem('currentAirTemp', Math.round(res.current.temperature_2m));
         updateUI();
-    } catch (e) { alert("Weather Error"); }
+    } catch (e) { alert("Weather Update Failed"); }
 }
 
-// --- FERTILIZER & ECHO RB60 ---
+// --- EQUIPMENT & FERTILIZER ---
+function toggleCustomMower() {
+    document.getElementById('customMowerInput').style.display = (document.getElementById('mowerLibrary').value === 'custom') ? 'block' : 'none';
+}
+
+function saveEquipment() {
+    const libVal = document.getElementById('mowerLibrary').value;
+    const name = (libVal === 'custom') ? document.getElementById('newMowerName').value : libVal;
+    const interval = document.getElementById('maintInterval').value;
+    if (!name) return alert("Enter Mower Name");
+    localStorage.setItem('activeMower', name);
+    localStorage.setItem('sharpenInterval', interval);
+    updateUI();
+}
+
 function handleFertSelect() {
     const select = document.getElementById('fertSelect');
     const opt = select.options[select.selectedIndex];
     if (!opt.value) return;
     document.getElementById('npkDisplay').innerText = `N-P-K: ${opt.value}`;
     document.getElementById('bagN').value = opt.value.split('-')[0];
-    const strategy = opt.getAttribute('data-desc');
-    document.getElementById('productTip').innerHTML = strategy;
+    document.getElementById('productTip').innerHTML = opt.getAttribute('data-desc');
     document.getElementById('fertAdvice').style.display = "block";
-    localStorage.setItem('activeFertStrategy', strategy);
 }
 
 function calculateFertilizer() {
     const size = parseFloat(document.getElementById('lawnSize').value);
     const n = parseFloat(document.getElementById('bagN').value);
+    if (!size || !n) return;
     const lbs = (1 / (n / 100)) * (size / 1000);
-    document.getElementById('fertResult').innerHTML = `Apply <b>${lbs.toFixed(1)} lbs</b> total.`;
+    document.getElementById('fertResult').innerHTML = `Total Needed: <b>${lbs.toFixed(1)} lbs</b>`;
     
-    // Echo RB60 Settings Map
+    // Spreader Settings Logic
+    const spreader = document.getElementById('spreaderModel').value;
     const rate = lbs / (size / 1000);
-    let setting = "4.0";
-    if (rate > 3.5) setting = "4.5";
-    if (rate > 4.5) setting = "5.0";
-    if (rate > 5.5) setting = "6.0";
-    document.getElementById('spreaderSetting').innerText = `Echo RB60 Setting: ${setting}`;
+    let set = "Refer to Manual";
+    if (spreader === 'echo') set = rate > 5 ? "5.5" : (rate > 4 ? "5.0" : "4.0");
+    if (spreader === 'scotts') set = rate > 5 ? "6.0" : (rate > 4 ? "5.0" : "4.5");
+    if (spreader === 'lesco') set = rate > 5 ? "16" : "14";
+    document.getElementById('spreaderSetting').innerText = `Setting: ${set}`;
 }
 
-// --- LOGGING ---
+// --- ACTIVITY LOGS ---
 function logActivity(type, detail = "") {
     const logs = JSON.parse(localStorage.getItem('lawnMasterLogs') || '[]');
     logs.unshift({ type, detail, date: new Date().toLocaleDateString(), gdd: localStorage.getItem('totalGDD') || 0 });
@@ -60,40 +75,48 @@ function logActivity(type, detail = "") {
     updateUI();
 }
 
-// --- UI CORE ---
+function resetBladeCounter() { 
+    const mower = localStorage.getItem('activeMower') || "Mower";
+    logActivity('Maint', `Sharpened ${mower} blades`);
+    localStorage.setItem('mowsAtLastSharpen', localStorage.getItem('mowCount')); 
+    updateUI(); 
+}
+
+// --- DIGITAL LEVELER ---
+function startLeveler() {
+    if (window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
+        DeviceOrientationEvent.requestPermission().then(s => { if(s=='granted') window.addEventListener('deviceorientation', handleLevel); });
+    } else { window.addEventListener('deviceorientation', handleLevel); }
+}
+function handleLevel(e) {
+    let angle = e.gamma;
+    document.getElementById('levelDisplay').innerText = angle.toFixed(1) + "°";
+    document.getElementById('levelAdvice').innerText = Math.abs(angle) < 0.5 ? "LEVEL" : (angle > 0 ? "LOW LEFT" : "LOW RIGHT");
+}
+
+// --- UI REFRESH ---
 function updateUI() {
+    const mower = localStorage.getItem('activeMower') || "Toro TimeMaster 30\"";
     const mows = parseInt(localStorage.getItem('mowCount') || 0) - parseInt(localStorage.getItem('mowsAtLastSharpen') || 0);
-    const interval = parseInt(localStorage.getItem('sharpenInterval') || 5);
+    const limit = parseInt(localStorage.getItem('sharpenInterval') || 5);
     const soil = localStorage.getItem('currentSoilTemp') || "--";
     
+    document.getElementById('activeMowerDisplay').innerText = `Active: ${mower}`;
+    document.getElementById('mowsSinceReset').innerText = `Mows since sharpen: ${mows}`;
     document.getElementById('temp').innerText = (localStorage.getItem('currentAirTemp') || "--") + "°F";
     document.getElementById('soilTempDisplay').innerText = "Soil: " + soil + "°F";
     document.getElementById('gddTotalDisplay').innerText = "Total GDD: " + Math.round(localStorage.getItem('totalGDD') || 0);
-    document.getElementById('mowsSinceReset').innerText = "Mows since sharpen: " + mows;
     
-    // Coach Alerts
-    let p = soil >= 55 ? "🚨 SOIL ALERT: Crabgrass window is OPEN." : "Update weather for coaching.";
-    let s = mows >= interval ? "⚠️ MAINTENANCE: Sharpen TimeMaster blades." : "✅ Equipment is ready.";
-    document.getElementById('coachAction').innerHTML = p;
-    document.getElementById('secondaryAdvice').innerHTML = s;
-    document.getElementById('garageAlert').style.display = mows >= interval ? 'block' : 'none';
+    // Alerts
+    const serviceDue = mows >= limit;
+    document.getElementById('garageAlert').style.display = serviceDue ? 'block' : 'none';
+    document.getElementById('coachAction').innerHTML = soil >= 55 ? "🚨 SOIL ALERT: Crabgrass window is OPEN." : "Update weather for coaching.";
+    document.getElementById('secondaryAdvice').innerHTML = serviceDue ? `⚠️ <b>Maintenance:</b> ${mower} needs service.` : `✅ ${mower} is ready.`;
 
     // History
     const logs = JSON.parse(localStorage.getItem('lawnMasterLogs') || '[]');
     document.getElementById('activityHistory').innerHTML = logs.filter(l=>l.type!=='Maint').map(l=>`<div>${l.date} - ${l.type}</div>`).join('');
     document.getElementById('maintenanceHistory').innerHTML = logs.filter(l=>l.type==='Maint').map(l=>`<div>${l.date} - ${l.detail}</div>`).join('');
-    
     document.getElementById('grassGrid').innerHTML = grassData.map(g => `<div class="db-card" onclick="localStorage.setItem('userGrassType','${g.n}');updateUI()"><b>${g.n}</b></div>`).join('');
-}
-
-function addNewEquipment() {
-    localStorage.setItem('activeMower', document.getElementById('newMowerName').value);
-    localStorage.setItem('sharpenInterval', document.getElementById('maintInterval').value);
-    updateUI();
-}
-function resetBladeCounter() { 
-    logActivity('Maint', 'Blades Sharpened');
-    localStorage.setItem('mowsAtLastSharpen', localStorage.getItem('mowCount')); 
-    updateUI(); 
 }
 window.onload = updateUI;
