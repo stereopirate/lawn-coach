@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lawn Coach Pro</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <nav class="navbar">
         <div class="logo-area">
-            <img src="logo.png" alt="Lawn Coach" class="app-logo">
             <span class="brand-name">LAWN COACH PRO</span>
         </div>
         <button class="hamburger" id="menuToggle">☰ MENU</button>
@@ -25,15 +23,9 @@
 
     <main id="content">
         <section id="dashboard" class="page active">
-            <div id="coachContainer" class="card coach-accent">
-                <h3 class="card-title">📋 Coach's Corner</h3>
+            <div class="card coach-accent">
+                <h3 class="card-title">📋 Current Status</h3>
                 <div id="coachAction" class="main-advice">Sync weather to begin...</div>
-                
-                <div id="fertAdvice" class="product-banner" style="display: none;">
-                    <span class="tag">STRATEGY</span>
-                    <div id="productTip"></div>
-                </div>
-
                 <div id="secondaryAdvice" class="sub-advice"></div>
             </div>
 
@@ -62,6 +54,11 @@
                 <button onclick="logActivity('Mow')" class="btn-main mow-btn">🚜 LOG MOW</button>
                 <button onclick="logActivity('Fertilize')" class="btn-main fert-btn">🌱 LOG FERT</button>
             </div>
+
+            <div class="card">
+                <h3 class="card-title">Recent Activity</h3>
+                <div id="activityHistory" class="log-container"></div>
+            </div>
         </section>
 
         <section id="yard" class="page">
@@ -69,59 +66,38 @@
                 <h3 class="card-title">Fertilizer Calculator</h3>
                 <select id="fertSelect" class="input-field" onchange="handleFertSelect()">
                     <option value="">-- Select Product --</option>
-                    <optgroup label="Synthetics">
-                        <option value="32-0-0" data-desc="High Nitrogen. Must water in immediately.">Scott's Turf Builder</option>
-                        <option value="29-0-1" data-desc="Weed & Feed. Water in after 24 hours.">Scott's Triple Action</option>
-                        <option value="16-0-8" data-desc="Commercial grade pre-emergent.">Lesco Stonewall</option>
-                    </optgroup>
-                    <optgroup label="Organic">
-                        <option value="6-4-0" data-desc="Slow-release organic. Safe in heat.">Milorganite</option>
-                        <option value="18-0-1" data-desc="Liquid leaf feed. Do not water for 24h.">Greene Punch</option>
-                    </optgroup>
+                    <option value="32-0-0" data-desc="High Nitrogen. Must water in.">Scott's Turf Builder</option>
+                    <option value="6-4-0" data-desc="Slow-release organic. Safe in heat.">Milorganite</option>
+                    <option value="18-0-1" data-desc="Liquid leaf feed. Do not water for 24h.">Greene Punch</option>
                 </select>
-                
                 <div class="input-group">
                     <input type="number" id="lawnSize" placeholder="Sq Ft" class="input-field">
                     <input type="number" id="bagN" placeholder="N %" class="input-field">
                 </div>
-
-                <select id="spreaderModel" class="input-field" style="margin-top:10px;">
+                <select id="spreaderModel" class="input-field">
                     <option value="echo">Echo RB60</option>
                     <option value="scotts">Scott's EdgeGuard</option>
-                    <option value="lesco">Lesco Commercial</option>
                     <option value="custom">-- Custom --</option>
                 </select>
-
                 <button onclick="calculateFertilizer()" class="btn-save">CALCULATE RATE</button>
                 <div id="fertResult" class="calc-result"></div>
                 <div id="spreaderSetting" class="spreader-badge">Setting: --</div>
-            </div>
-
-            <div class="card">
-                <h3 class="card-title">Activity History</h3>
-                <div id="activityHistory" class="log-container"></div>
             </div>
         </section>
 
         <section id="garage" class="page">
             <div id="garageAlert" class="alert-strip" style="display:none;">⚠️ MAINTENANCE OVERDUE</div>
             <div class="card coach-accent">
-                <h3 class="card-title">Equipment Manager</h3>
+                <h3 class="card-title">Mower Settings</h3>
                 <select id="mowerLibrary" class="input-field" onchange="toggleCustomMower()">
                     <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
-                    <option value="Honda HRX217">Honda HRX217</option>
                     <option value="custom">-- Custom Mower --</option>
                 </select>
-                <div id="customMowerInput" style="display:none; margin-top:10px;">
-                    <input type="text" id="newMowerName" placeholder="Mower Name" class="input-field">
-                </div>
-                <div class="input-group" style="margin-top:10px;">
+                <div class="input-group">
                     <label>Sharpen Every:</label>
                     <input type="number" id="maintInterval" value="5" class="input-field" style="width:60px">
-                    <span>Mows</span>
                 </div>
-                <button onclick="saveEquipment()" class="btn-save">UPDATE PROFILE</button>
-                
+                <button onclick="saveEquipment()" class="btn-save">SAVE PROFILE</button>
                 <div class="equipment-status">
                     <div id="activeMowerDisplay" class="eq-name">No Mower Set</div>
                     <div id="mowsSinceReset" class="eq-count">Mows: 0</div>
@@ -134,14 +110,12 @@
             <div class="card dark-card">
                 <h3>Deck Leveler</h3>
                 <div id="levelDisplay" class="level-val">0.0°</div>
-                <div id="levelAdvice" class="level-label">READY</div>
                 <button onclick="startLeveler()" class="btn-save">START SENSORS</button>
             </div>
-
             <div class="card coach-accent">
                 <h3>🔍 Grass ID Quiz</h3>
                 <div id="quizContainer">
-                    <p id="quizQuestion" class="quiz-text">Does the tip of the blade look like a canoe (pointed but cupped)?</p>
+                    <p id="quizQuestion" class="quiz-text">Does the tip of the blade look like a canoe?</p>
                     <div class="input-group">
                         <button onclick="quizAnswer(true)" class="btn-save">YES</button>
                         <button onclick="quizAnswer(false)" class="btn-save" style="background:#666">NO</button>
