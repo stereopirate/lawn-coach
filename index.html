@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lawn Coach</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -43,11 +44,8 @@
                     <p>Lawn is thriving</p>
                 </div>
                 <div class="card wide">
-                    <h3>Upcoming Tasks</h3>
-                    <ul class="task-list">
-                        <li>🚜 Scheduled Mow: Friday</li>
-                        <li>🌱 Nutrient Check: Sunday</li>
-                    </ul>
+                    <h3>Mowing Trends (Last 30 Days)</h3>
+                    <canvas id="mowingChart" style="max-height: 250px;"></canvas>
                 </div>
             </div>
         </section>
@@ -80,7 +78,6 @@
             </div>
         </section>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
