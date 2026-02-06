@@ -22,11 +22,15 @@
     <main id="content">
         <section id="dashboard" class="page active">
             <div class="dashboard-grid">
-                <div class="card wide" style="border: 2px solid var(--accent); background: #f0fff4;">
-                    <h3 style="margin-top:0;"><span style="font-size:1.2rem;">📋</span> Coach's Corner</h3>
-                    <div id="coachAction" style="font-size: 1rem; line-height: 1.4;">Analyzing your lawn stats...</div>
+                <div class="card wide coach-card">
+                    <h3>📋 Coach's Corner</h3>
+                    <div id="coachAction">Analyzing lawn data...</div>
                 </div>
-
+                <div class="card">
+                    <h3>Watering</h3>
+                    <div class="big-stat" id="waterStat">0 / --"</div>
+                    <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill"></div></div>
+                </div>
                 <div class="card">
                     <h3>Weather</h3>
                     <div id="temp" class="big-stat">--°F</div>
@@ -35,13 +39,8 @@
                         <button onclick="saveZip()">OK</button>
                     </div>
                 </div>
-                <div class="card">
-                    <h3>Watering</h3>
-                    <div class="big-stat" id="waterStat">0 / --"</div>
-                    <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill" style="background: #3498db;"></div></div>
-                </div>
                 <div class="card wide">
-                    <h3>Mowing Trends</h3>
+                    <h3>Mowing History</h3>
                     <div style="height:180px;"><canvas id="mowingChart"></canvas></div>
                 </div>
             </div>
@@ -49,35 +48,33 @@
 
         <section id="yard" class="page">
             <div class="card">
-                <h3>Grass & Soil</h3>
-                <label>Grass Type</label>
-                <select id="grassTypeSelector" onchange="updateGrassType()" class="full-select">
-                    <option value="tall_fescue">Tall Fescue</option>
-                    <option value="kentucky_bluegrass">Kentucky Bluegrass</option>
-                    <option value="bermuda">Bermuda</option>
-                    <option value="zoysia">Zoysia</option>
-                    <option value="st_augustine">St. Augustine</option>
-                </select>
-                <div style="margin-top:15px;">
-                    <label>Soil pH</label>
-                    <input type="number" id="soilPH" step="0.1" placeholder="7.0" onchange="saveSoil()" class="full-select">
-                    <div id="soilAdvice" class="advice-box"></div>
+                <h3>Growth Tracker</h3>
+                <p><small>Measure height before you mow to track growth rate.</small></p>
+                <div class="form-row">
+                    <input type="number" id="grassHeight" step="0.1" placeholder="Height (Inches)">
+                    <button onclick="saveGrowth()" class="btn-save" style="background:#8e44ad;">Log Growth</button>
                 </div>
-            </div>
-
-            <div class="card" style="background: #e8f5e9; border-left: 5px solid #27ae60;">
-                <h3>Maintenance Pro-Tip</h3>
-                <div id="mowHeightAdvice"></div>
+                <div id="growthAdvice" class="advice-box" style="margin-top:10px;"></div>
             </div>
 
             <div class="card">
-                <h3>Project Planner</h3>
+                <h3>Soil Health Sensors</h3>
                 <div class="form-row">
-                    <input type="number" id="projSqFt" placeholder="Area (Sq Ft)">
-                    <input type="number" id="projDepth" placeholder="Depth (Inches)" step="0.5">
+                    <input type="number" id="soilTemp" placeholder="Temp (°F)">
+                    <input type="number" id="soilMoisture" placeholder="Moisture (%)">
                 </div>
-                <button onclick="calculateMaterials()" class="btn-save" style="background:#34495e; margin-top:10px;">Calculate Cubic Yards</button>
-                <div id="projResult" class="advice-box" style="margin-top:10px;"></div>
+                <button onclick="saveSoilHealth()" class="btn-save" style="margin-top:10px; background:#2980b9;">Update Sensors</button>
+            </div>
+
+            <div class="card">
+                <h3>Fertilizer Calculator</h3>
+                <div class="form-row">
+                    <input type="number" id="targetN" placeholder="Target N (lbs/1k)">
+                    <input type="number" id="bagN" placeholder="Bag N %">
+                    <input type="number" id="fertBagWeight" placeholder="Bag Weight">
+                </div>
+                <button onclick="calculateFertNeeded()" class="btn-save" style="margin-top:10px; background:#27ae60;">Calculate Bags</button>
+                <div id="fertResult" class="advice-box" style="margin-top:10px;"></div>
             </div>
         </section>
 
@@ -86,42 +83,23 @@
                 <h3>Equipment Manager</h3>
                 <div class="form-row">
                     <select id="mowerSelect" class="full-select"></select>
-                    <button onclick="addEquipment('mower')" class="btn-save" style="width:auto">Add Mower</button>
+                    <button onclick="addEquipment('mower')" class="btn-save">Add Mower</button>
                 </div>
                 <div class="form-row" style="margin-top:10px;">
                     <select id="spreaderSelect" class="full-select"></select>
-                    <button onclick="addEquipment('spreader')" class="btn-save" style="width:auto">Add Spreader</button>
+                    <button onclick="addEquipment('spreader')" class="btn-save">Add Spreader</button>
                 </div>
-                <div id="equipmentList" class="history-container" style="margin-top:15px;"></div>
+                <div id="equipmentList" style="margin-top:15px;"></div>
             </div>
 
             <div id="mowerServiceSection" style="display:none;">
                 <div class="card">
-                    <h3 id="activeMowerName">Mower Service Log</h3>
-                    <div class="form-row">
-                        <select id="serviceTask">
-                            <option value="Oil Change">Oil Change</option>
-                            <option value="Blade Sharpen">Blade Sharpen</option>
-                            <option value="Air Filter">Air Filter</option>
-                            <option value="Spark Plug">Spark Plug</option>
-                        </select>
-                        <input type="date" id="serviceDate">
-                        <button onclick="saveService()" class="btn-save" style="width:auto;">Log</button>
+                    <h3 id="activeMowerName">Maint. Info</h3>
+                    <div id="maintDetails" class="advice-box"></div>
+                    <div class="form-row" style="margin-top:10px;">
+                        <input type="number" id="engHours" placeholder="Current Hours">
+                        <button onclick="saveHours()" class="btn-save">Update Hours</button>
                     </div>
-                    <div id="activeServiceHistory"></div>
-                </div>
-            </div>
-
-            <div id="spreaderToolSection" style="display:none;">
-                <div class="card" style="border-left: 5px solid #f1c40f;">
-                    <h3>Spreader Calibration & Care</h3>
-                    <p><small><strong>Wash-Down Reminder:</strong> Always rinse your spreader with a hose after use. Fertilizer salts are highly corrosive to metal gears and axles!</small></p>
-                    <div class="form-row">
-                        <input type="number" id="bagWeight" placeholder="Bag Lbs">
-                        <input type="number" id="bagCoverage" placeholder="Coverage SqFt">
-                    </div>
-                    <button onclick="runCalibrationCalc()" class="btn-save" style="background:#34495e; margin-top:10px;">Get Test Weight</button>
-                    <div id="calResult" class="advice-box" style="margin-top:10px;"></div>
                 </div>
             </div>
         </section>
@@ -138,13 +116,8 @@
                         </select>
                         <input type="date" id="actDate" required>
                     </div>
-                    <div id="waterInput" style="display:none;"><input type="number" id="actAmount" placeholder="Inches" class="full-select"></div>
-                    <div id="fertInput" style="display:none;" class="npk-inputs">
-                        <input type="number" id="valInputN" placeholder="N">
-                        <input type="number" id="valInputP" placeholder="P">
-                        <input type="number" id="valInputK" placeholder="K">
-                    </div>
-                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Activity</button>
+                    <div id="waterInput" style="display:none;"><input type="number" id="actAmount" placeholder="Inches"></div>
+                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Entry</button>
                 </form>
             </div>
             <div id="historyList"></div>
