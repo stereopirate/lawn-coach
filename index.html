@@ -27,25 +27,32 @@
                 <div class="card weather-card">
                     <h3>Current Weather</h3>
                     <div id="temp" class="big-stat">--°F</div>
-                    <p id="weatherDesc">Loading...</p>
+                    <p id="weatherDesc">Enter ZIP to start</p>
                     <div class="zip-input-group">
                         <input type="text" id="zipCode" placeholder="ZIP" maxlength="5">
                         <button onclick="saveZip()">Update</button>
                     </div>
                 </div>
+                
                 <div class="card">
                     <h3>Weekly Water Goal</h3>
                     <div class="big-stat" id="waterStat">0 / 1.5"</div>
                     <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill" style="width: 0%; background: #3498db;"></div></div>
                 </div>
+
                 <div class="card">
-                    <h3>Health Score</h3>
-                    <div class="big-stat" style="color: #2ecc71;">85</div>
-                    <p>Lawn is thriving</p>
+                    <h3>Season Summary</h3>
+                    <div class="summary-flex">
+                        <div><strong id="totalMows">0</strong><br><small>Mows</small></div>
+                        <div><strong id="totalWater">0"</strong><br><small>Total Water</small></div>
+                    </div>
                 </div>
+
                 <div class="card wide">
-                    <h3>Mowing Trends (Last 30 Days)</h3>
-                    <canvas id="mowingChart" style="max-height: 250px;"></canvas>
+                    <h3>Mowing Trends</h3>
+                    <div style="position: relative; height:200px; width:100%">
+                        <canvas id="mowingChart"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
@@ -60,9 +67,9 @@
                             <option value="Water">Water</option>
                         </select>
                         <input type="date" id="actDate" required>
-                        <input type="number" id="actAmount" placeholder="Inches" step="0.1" style="display:none; width: 80px;">
+                        <input type="number" id="actAmount" placeholder="Inches" step="0.1" style="display:none; width: 100px;">
                     </div>
-                    <button type="submit" class="btn-save" style="margin-top:10px;">Save Activity</button>
+                    <button type="submit" class="btn-save">Save Activity</button>
                 </form>
             </div>
             <div id="historyList" class="history-container"></div>
@@ -71,10 +78,14 @@
         <section id="garage" class="page">
             <div class="card">
                 <h3>Mower Maintenance</h3>
-                <p>Oil Life</p>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 80%; background: #f1c40f;"></div></div>
-                <p>Blade Sharpness</p>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 45%; background: #e67e22;"></div></div>
+                <div class="maint-item">
+                    <p>Oil Life</p>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 85%; background: #f1c40f;"></div></div>
+                </div>
+                <div class="maint-item">
+                    <p>Blade Sharpness</p>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%; background: #e67e22;"></div></div>
+                </div>
             </div>
         </section>
     </main>
