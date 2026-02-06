@@ -6,7 +6,6 @@
     <title>Lawn Coach Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -29,32 +28,57 @@
         <section id="dashboard" class="page active">
             <div class="card wide coach-accent">
                 <h3>📋 Coach's Corner</h3>
-                <div id="coachAction">Standby...</div>
+                <div id="coachAction">Welcome to Lawn Coach Pro. Check your GDD for spring timing!</div>
             </div>
             <div class="dashboard-grid">
                 <div class="card">
                     <h3>Weather & GDD</h3>
                     <div id="temp" class="big-stat">--°F</div>
-                    <div id="gddTotalDisplay">Total GDD: 0</div>
+                    <div id="gddTotalDisplay" style="font-weight:bold; margin-top:10px;">Total GDD: 0</div>
                 </div>
-                <div class="card">
-                    <h3>Watering</h3>
-                    <div class="big-stat" id="waterStat">0 / 1.5"</div>
-                    <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill"></div></div>
+            </div>
+        </section>
+
+        <section id="yard" class="page">
+            <div class="card">
+                <h3>GDD Tracker</h3>
+                <div class="form-row">
+                    <input type="number" id="manualGDD" placeholder="Today's GDD">
+                    <button onclick="addGDD()" class="btn-save">Add</button>
                 </div>
+            </div>
+        </section>
+
+        <section id="garage" class="page">
+            <div class="card">
+                <h3>Equipment Service</h3>
+                <div id="mowsSinceReset">Mows since sharpen: 0</div>
+                <button onclick="resetBladeCounter()" class="btn-save" style="margin-top:10px;">Reset Blade Counter</button>
             </div>
         </section>
 
         <section id="tools" class="page">
             <div class="card tool-dark">
                 <h3>📐 Precision Deck Leveler</h3>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom:20px;">
                     <button onclick="setLevelMode('side')" id="btnSide" class="btn-tool active">Side-to-Side</button>
                     <button onclick="setLevelMode('rake')" id="btnRake" class="btn-tool">Front-to-Back</button>
                 </div>
                 <div id="levelDisplay">0.0°</div>
                 <div id="levelAdvice">READY</div>
-                <button onclick="startLeveler()" class="btn-save">Enable Sensors</button>
+                <button onclick="startLeveler()" class="btn-save" style="background:var(--accent);">Start Sensors</button>
+            </div>
+        </section>
+
+        <section id="gallery" class="page">
+            <div class="card">
+                <h3>Journal Photos</h3>
+                <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto()" style="width:100%;">
+                <div id="photoGrid" class="db-grid" style="margin-top:15px;"></div>
+            </div>
+            <div class="card">
+                <h3>Fungus Library</h3>
+                <div id="fungusLibrary" class="db-grid"></div>
             </div>
         </section>
 
@@ -64,20 +88,8 @@
                 <div id="grassGrid" class="db-grid"></div>
             </div>
         </section>
+    </main>
 
-        <section id="gallery" class="page">
-            <div class="card">
-                <h3>Lawn Journal</h3>
-                <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto()">
-                <div id="photoGrid" class="db-grid" style="margin-top:15px;"></div>
-            </div>
-            <div class="card">
-                <h3>Disease Reference</h3>
-                <div id="fungusLibrary" class="db-grid"></div>
-            </div>
-        </section>
-        
-        </main>
     <script src="script.js"></script>
 </body>
 </html>
