@@ -16,13 +16,14 @@
             <li><a href="#" onclick="showPage('activities')">Log</a></li>
             <li><a href="#" onclick="showPage('yard')">The Yard</a></li>
             <li><a href="#" onclick="showPage('garage')">The Garage</a></li>
+            <li><a href="#" onclick="showPage('tools')">Digital Tools</a></li>
         </ul>
     </nav>
 
     <main id="content">
         <section id="dashboard" class="page active">
             <div class="dashboard-grid">
-                <div class="card wide" id="coachCard">
+                <div class="card wide" id="coachCard" style="border: 2px solid var(--accent); background: #f0fff4;">
                     <h3>📋 Coach's Corner</h3>
                     <div id="coachAction">Standby...</div>
                 </div>
@@ -42,6 +43,18 @@
             </div>
         </section>
 
+        <section id="yard" class="page">
+            <div class="card">
+                <h3>Growth Tracking (GDD)</h3>
+                <p><small>GDD = ((Max Temp + Min Temp) / 2) - 50</small></p>
+                <div class="form-row">
+                    <input type="number" id="manualGDD" placeholder="Today's GDD">
+                    <button onclick="addGDD()" class="btn-save">Add</button>
+                </div>
+                <div id="gddTotalDisplay" class="advice-box" style="font-weight:bold; text-align:center;">Total Season GDD: 0</div>
+            </div>
+            </section>
+
         <section id="garage" class="page">
             <div class="card">
                 <h3>Equipment Manager</h3>
@@ -57,9 +70,18 @@
             </div>
 
             <div id="mowerServiceSection" style="display:none;">
-                <div class="card" style="border-top: 4px solid #f1c40f;">
+                <div id="bladeStatusCard" class="card" style="border-left: 5px solid var(--accent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="margin:0;">Blade Health</h4>
+                            <div id="mowsSinceReset">Mows since sharpen: 0</div>
+                        </div>
+                        <button onclick="resetBladeCounter()" class="btn-save" style="width:auto; background:#2d3436;">Reset / Sharpened</button>
+                    </div>
+                </div>
+                <div class="card">
                     <h3 id="activeMowerName">Service Log</h3>
-                    <div id="maintAlert" class="advice-box" style="display:none; margin-bottom:10px;"></div>
+                    <div id="maintAlert" class="advice-box" style="display:none; background:#fff3cd;"></div>
                     <div class="form-row">
                         <select id="serviceTask">
                             <option value="Oil Change">Oil Change</option>
@@ -68,11 +90,23 @@
                         <input type="date" id="serviceDate">
                         <button onclick="saveService()" class="btn-save">Log</button>
                     </div>
-                    <div id="activeServiceHistory" style="margin-top:10px;"></div>
                 </div>
             </div>
         </section>
-        
+
+        <section id="tools" class="page">
+            <div class="card" style="background: #2d3436; color: white;">
+                <h3 style="color: white;">📐 Precision Deck Leveler</h3>
+                <div class="form-row" style="margin: 20px 0;">
+                    <button onclick="setLevelMode('side')" id="btnSide" class="btn-save" style="background: var(--accent);">Side-to-Side</button>
+                    <button onclick="setLevelMode('rake')" id="btnRake" class="btn-save" style="background: #555;">Front-to-Back (Rake)</button>
+                </div>
+                <div id="levelDisplay" style="font-size: 4rem; text-align: center; color: var(--accent); font-weight: 800;">0.0°</div>
+                <div id="levelAdvice" style="text-align: center; font-weight: bold; min-height: 1.2em;">READY</div>
+                <button onclick="startLeveler()" class="btn-save" style="background: var(--secondary); margin-top: 20px;">Enable Sensors</button>
+            </div>
+        </section>
+
         </main>
     <script src="script.js"></script>
 </body>
