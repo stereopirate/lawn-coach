@@ -28,8 +28,14 @@
         <section id="dashboard" class="page active">
             <div id="coachContainer" class="card wide coach-accent">
                 <h3>📋 Coach's Corner</h3>
-                <div id="coachAction">Enter Zip to start coaching...</div>
-                <div id="secondaryAdvice" style="font-size: 0.85rem; color: #666; border-top: 1px solid #eee; padding-top: 10px; margin-top:10px;"></div>
+                <div id="coachAction" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;">Enter Zip to start...</div>
+                
+                <div id="fertAdvice" style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 8px; display: none; border-left: 4px solid var(--accent);">
+                    <h4 style="color: var(--primary); font-size: 0.75rem; text-transform: uppercase;">Product Strategy</h4>
+                    <div id="productTip" style="font-size: 0.85rem; margin-top: 5px;"></div>
+                </div>
+
+                <div id="secondaryAdvice" class="secondary-text"></div>
             </div>
 
             <div class="card">
@@ -41,11 +47,11 @@
                 <div class="db-grid">
                     <div>
                         <div id="temp" class="big-stat">--°F</div>
-                        <div id="soilTempDisplay" style="color:var(--accent); font-weight:bold;">Soil: --°F</div>
+                        <div id="soilTempDisplay" class="soil-text">Soil: --°F</div>
                     </div>
                     <div style="text-align:right;">
                         <div id="gddToday" style="font-size:1.2rem; font-weight:bold;">Today: +0</div>
-                        <div id="gddTotalDisplay">Total: 0</div>
+                        <div id="gddTotalDisplay">Total GDD: 0</div>
                     </div>
                 </div>
             </div>
@@ -61,44 +67,69 @@
 
         <section id="yard" class="page">
             <div class="card coach-accent">
-                <h3>Fertilizer Calculator</h3>
+                <h3>Fertilizer & Spreader</h3>
+                <select id="fertSelect" class="btn-save" style="background:white; color:black; border:1px solid #ccc; margin-bottom:10px;" onchange="handleFertSelect()">
+                    <option value="">-- Select Fertilizer --</option>
+                    <optgroup label="Popular Synthetics">
+                        <option value="32-0-0" data-desc="High Nitrogen for rapid green-up. Must water in.">Scott's Turf Builder</option>
+                        <option value="29-0-1" data-desc="Triple Action: Feeds and prevents weeds. Water in.">Scott's Triple Action</option>
+                        <option value="16-0-8" data-desc="Professional grade with Crabgrass pre-emergent.">Lesco Stonewall</option>
+                    </optgroup>
+                    <optgroup label="Organic/Slow Release">
+                        <option value="6-4-0" data-desc="Milorganite: Slow-release, non-burning iron. No water needed.">Milorganite</option>
+                        <option value="18-0-1" data-desc="Greene Punch: Liquid foliar feed. Do not water for 24h.">Greene Punch (Liquid)</option>
+                    </optgroup>
+                </select>
+                <div id="npkDisplay" style="font-weight:bold; color:var(--accent); font-size:0.9rem; margin-bottom:5px;">N-P-K: --</div>
+                
                 <div class="form-row">
                     <input type="number" id="lawnSize" placeholder="Sq Ft">
                     <input type="number" id="bagN" placeholder="N %">
                 </div>
-                <button onclick="calculateFertilizer()" class="btn-save" style="margin-top:10px">Calc Lbs</button>
-                <div id="fertResult" style="margin-top:10px; font-weight:bold; color:var(--primary);"></div>
+                <button onclick="calculateFertilizer()" class="btn-save" style="margin-top:10px">Calc Lbs & Settings</button>
+                <div id="fertResult" class="result-text" style="margin-top:10px; font-weight:bold;"></div>
+                
+                <hr style="margin:15px 0; opacity:0.1;">
+                
+                <h4>Spreader: Echo RB60</h4>
+                <div id="spreaderSetting" style="font-size:1.5rem; color:var(--primary); font-weight:800;">Setting: --</div>
             </div>
+
             <div class="card">
-                <h3>Soil Record</h3>
-                <div class="form-row"><input id="soilPH" placeholder="pH"><input id="soilN" placeholder="Nitrogen"></div>
-                <button onclick="saveSoilTest()" class="btn-save" style="margin-top:10px">Save</button>
-                <div id="soilDisplay" style="margin-top:10px; font-size:0.8rem;"></div>
+                <h3>Lawn Activity Log</h3>
+                <div id="activityHistory" class="history-list"></div>
             </div>
         </section>
 
         <section id="garage" class="page">
-            <div id="garageAlert" class="card" style="display:none; background:#e74c3c; color:white;">⚠️ SHARPEN BLADES NOW</div>
+            <div id="garageAlert" class="alert-banner" style="display:none;">⚠️ SERVICE REQUIRED: Sharpen Blades</div>
             <div class="card coach-accent">
-                <h3>Equipment</h3>
-                <div id="activeMowerDisplay" style="font-weight:bold; margin-bottom:10px;"></div>
+                <h3>Equipment Profile</h3>
+                <div class="form-row" style="margin-bottom:10px;">
+                    <input type="text" id="newMowerName" placeholder="Toro TimeMaster">
+                    <input type="number" id="maintInterval" placeholder="5" style="width:60px">
+                </div>
+                <button onclick="addNewEquipment()" class="btn-save">Update Mower</button>
+                <div id="activeMowerDisplay" style="margin-top:15px; font-weight:bold;">Toro TimeMaster</div>
                 <div id="mowsSinceReset">Mows: 0</div>
-                <button onclick="resetBladeCounter()" class="btn-save" style="background:#555; margin-top:10px;">Reset Blades</button>
+                <button onclick="resetBladeCounter()" class="btn-save" style="background:#555; margin-top:10px;">Mark Sharpened</button>
+            </div>
+            <div class="card">
+                <h3>Maintenance History</h3>
+                <div id="maintenanceHistory" class="history-list"></div>
             </div>
         </section>
 
         <section id="tools" class="page">
             <div class="card tool-dark">
-                <h3>Precision Leveler</h3>
+                <h3>Precision Deck Leveler</h3>
                 <div id="levelDisplay">0.0°</div>
+                <div id="levelAdvice">READY</div>
                 <button onclick="startLeveler()" class="btn-save">Start Sensors</button>
             </div>
         </section>
 
-        <section id="gallery" class="page">
-            <div class="card"><h3>Journal</h3><input type="file" onchange="uploadPhoto()"><div id="photoGrid" class="db-grid"></div></div>
-            <div class="card"><h3>Fungus Library</h3><div id="fungusLibrary" class="db-grid"></div></div>
-        </section>
+        <section id="gallery" class="page"><div class="card"><h3>Journal</h3><input type="file" onchange="uploadPhoto()"><div id="photoGrid" class="db-grid"></div></div></section>
         <section id="grass-db" class="page"><div class="card"><h3>Grass Library</h3><div id="grassGrid" class="db-grid"></div></div></section>
     </main>
     <script src="script.js"></script>
