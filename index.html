@@ -1,31 +1,79 @@
-<section id="garage" class="page">
-    <div class="card">
-        <h3>Equipment Manager</h3>
-        <div class="form-row">
-            <select id="mowerModelSelect" class="full-select">
-                <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
-                <option value="Honda HRX217">Honda HRX217</option>
-                <option value="Other">Other Mower</option>
-            </select>
-            <button onclick="addEquipment('mower')" class="btn-save" style="width:auto">Add Mower</button>
-        </div>
-        <div id="equipmentList" style="margin-top:15px;"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lawn Coach Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container"><span class="brand-name">LAWN COACH</span></div>
+        <button class="hamburger" id="menuToggle">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+            <li><a href="#" onclick="showPage('activities')">Log</a></li>
+            <li><a href="#" onclick="showPage('yard')">The Yard</a></li>
+            <li><a href="#" onclick="showPage('garage')">The Garage</a></li>
+        </ul>
+    </nav>
 
-    <div id="mowerServiceSection" style="display:none;">
-        <div class="card" style="border-top: 4px solid #f1c40f;">
-            <h3 id="activeMowerName">Service Log</h3>
-            <div id="maintAlert" class="advice-box" style="margin-bottom:10px; display:none; background:#fff3cd;"></div>
-            <div class="form-row">
-                <select id="serviceTask">
-                    <option value="Oil Change">Oil Change</option>
-                    <option value="Blade Sharpen">Blade Sharpen</option>
-                    <option value="Air Filter">Air Filter</option>
-                </select>
-                <input type="date" id="serviceDate">
-                <button onclick="saveService()" class="btn-save">Log Service</button>
+    <main id="content">
+        <section id="dashboard" class="page active">
+            <div class="dashboard-grid">
+                <div class="card wide" id="coachCard">
+                    <h3>📋 Coach's Corner</h3>
+                    <div id="coachAction">Standby...</div>
+                </div>
+                <div class="card">
+                    <h3>Weather</h3>
+                    <div id="temp" class="big-stat">--°F</div>
+                    <div class="zip-input-group">
+                        <input type="text" id="zipCode" placeholder="ZIP" maxlength="5">
+                        <button onclick="saveZip()">OK</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Watering</h3>
+                    <div class="big-stat" id="waterStat">0 / --"</div>
+                    <div class="progress-bar-bg"><div id="waterBar" class="progress-bar-fill"></div></div>
+                </div>
             </div>
-            <div id="activeServiceHistory" style="margin-top:10px;"></div>
-        </div>
-    </div>
-</section>
+        </section>
+
+        <section id="garage" class="page">
+            <div class="card">
+                <h3>Equipment Manager</h3>
+                <div class="form-row">
+                    <select id="mowerModelSelect" class="full-select">
+                        <option value="Toro TimeMaster 30\"">Toro TimeMaster 30"</option>
+                        <option value="Honda HRX217">Honda HRX217</option>
+                        <option value="Other">Other Mower</option>
+                    </select>
+                    <button onclick="addEquipment('mower')" class="btn-save">Add Mower</button>
+                </div>
+                <div id="equipmentList" style="margin-top:15px;"></div>
+            </div>
+
+            <div id="mowerServiceSection" style="display:none;">
+                <div class="card" style="border-top: 4px solid #f1c40f;">
+                    <h3 id="activeMowerName">Service Log</h3>
+                    <div id="maintAlert" class="advice-box" style="display:none; margin-bottom:10px;"></div>
+                    <div class="form-row">
+                        <select id="serviceTask">
+                            <option value="Oil Change">Oil Change</option>
+                            <option value="Blade Sharpen">Blade Sharpen</option>
+                        </select>
+                        <input type="date" id="serviceDate">
+                        <button onclick="saveService()" class="btn-save">Log</button>
+                    </div>
+                    <div id="activeServiceHistory" style="margin-top:10px;"></div>
+                </div>
+            </div>
+        </section>
+        
+        </main>
+    <script src="script.js"></script>
+</body>
+</html>
